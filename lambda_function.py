@@ -1,3 +1,6 @@
+import datetime
+import os
+
 import pandas as pd
 
 
@@ -31,9 +34,15 @@ column_rename = {
 for df in [rpm_grouped, sfdc_grouped]:
     df.rename(columns=column_rename, inplace=True)
 
-# join the dataframes into one
+# join the dataframes into one using common columns 'Supplier' and 'Month'
 merged_df = rpm_grouped.merge(sfdc_grouped, on=['Supplier', 'Month'])
 
+# create output CSV file from merged dataframe and store in output folder
+cwd = os.path.dirname(os.path.abspath(__file__))
+file_path = os.path.join(cwd, 'output', f'{datetime.datetime.now().strftime("%Y-%m-%d %H_%M_%S")}.csv')
+merged_df.to_csv(file_path, index=False)
+
+# answer Analytcial Questions dynamically
 print('Analytical Questions\n')
 
 print('1. How many Suppliers were billed in August of 2022?')
@@ -48,10 +57,3 @@ if diff_df.at[0, 'diff'] != 0:
     print(f'''Supplier: {diff_df.at[0, 'Supplier']}\nMonth: {diff_df.at[0, 'Month']}''')
 else:
     print('There are no discrepancies, all Suppliers for all Months have matching Billed and Registered values')
-
-# def lambda_handler(event, context):
-#
-#     print(event)
-#     print(context)
-#     print('hello')
-
