@@ -47,7 +47,7 @@ print('Analytical Questions\n')
 
 print('1. How many Suppliers were billed in August of 2022?')
 august_2022 = merged_df[merged_df['Month'] == '202208']
-print(f'Number of Suppliers billed in August of 2022 = {len(august_2022)}\n')
+print(f'''Number of Suppliers billed in August of 2022 = {len(august_2022)}\nSuppliers: {august_2022['Supplier'].values.tolist()}\n''')
 
 print('2. Which Supplier in which month had the largest positive discrepancy between what was registered and what was billed?')
 diff_df = merged_df.copy(deep=True)
