@@ -42,7 +42,7 @@ cwd = os.path.dirname(os.path.abspath(__file__))
 file_path = os.path.join(cwd, 'output', f'{datetime.datetime.now().strftime("%Y-%m-%d %H_%M_%S")}.csv')
 merged_df.to_csv(file_path, index=False)
 
-# answer Analytcial Questions dynamically
+# answer Analytical Questions dynamically
 print('Analytical Questions\n')
 
 print('1. How many Suppliers were billed in August of 2022?')
