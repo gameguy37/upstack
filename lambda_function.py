@@ -15,7 +15,9 @@ sfdc_raw['Amount'] = sfdc_raw['Amount'].replace('[\$,)]', '', regex=True).replac
 
 # group the dataframes to the appropriate level of granularity and sum the named value columns ('Net billed' and 'Amount')
 rpm_grouped = rpm_raw.groupby(['Agency', 'Added'], as_index=False).agg({'Net billed': 'sum'})
+print(rpm_grouped)
 sfdc_grouped = sfdc_raw.groupby(['Advisory Partner', 'Date'], as_index=False).agg({'Amount': 'sum'})
+print(sfdc_grouped)
 
 # rename the dataframes to match requested column names in README file
 column_rename = {
@@ -41,8 +43,7 @@ print(f'Number of Suppliers billed in August of 2022 = {len(august_2022)}\n')
 print('2. Which Supplier in which month had the largest positive discrepancy between what was registered and what was billed?')
 diff_df = merged_df.copy(deep=True)
 diff_df['diff'] = diff_df['Registered'] - diff_df['Billed']
-diff_df.sort_values(by=['diff'], ascending=False)
-print(diff_df)
+diff_df = diff_df.sort_values(by=['diff'], ascending=False).reset_index(drop=True)
 if diff_df.at[0, 'diff'] != 0:
     print(f'''Supplier: {diff_df.at[0, 'Supplier']}\nMonth: {diff_df.at[0, 'Month']}''')
 else:
