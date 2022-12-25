@@ -8,7 +8,7 @@ import pandas as pd
 rpm_raw = pd.read_csv('rpm_data.tsv', sep='\t')
 sfdc_raw = pd.read_csv('sfdc_data.tsv', sep='\t')
 
-# convert all dates to YYMMMM format
+# convert all date columns to YYYYMM format
 rpm_raw.Added = pd.to_datetime(rpm_raw.Added).dt.strftime('%Y%m')
 sfdc_raw.Date = pd.to_datetime(sfdc_raw.Date).dt.strftime('%Y%m')
 
@@ -37,7 +37,7 @@ for df in [rpm_grouped, sfdc_grouped]:
 # join the dataframes into one using common columns 'Supplier' and 'Month'
 merged_df = rpm_grouped.merge(sfdc_grouped, on=['Supplier', 'Month'])
 
-# create output CSV file from merged dataframe and store in output folder
+# create timestamped output CSV file from merged dataframe and store in ./output folder
 cwd = os.path.dirname(os.path.abspath(__file__))
 file_path = os.path.join(cwd, 'output', f'{datetime.datetime.now().strftime("%Y-%m-%d %H_%M_%S")}.csv')
 merged_df.to_csv(file_path, index=False)
