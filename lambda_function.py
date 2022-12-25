@@ -34,8 +34,9 @@ column_rename = {
 for df in [rpm_grouped, sfdc_grouped]:
     df.rename(columns=column_rename, inplace=True)
 
-# join the dataframes into one using common columns 'Supplier' and 'Month'
+# join the dataframes into one using common columns 'Supplier' and 'Month' then reorder to match README
 merged_df = rpm_grouped.merge(sfdc_grouped, on=['Supplier', 'Month'])
+merged_df = merged_df[['Supplier', 'Registered', 'Billed', 'Month']]
 
 # create timestamped output CSV file from merged dataframe and store in ./output folder
 cwd = os.path.dirname(os.path.abspath(__file__))
