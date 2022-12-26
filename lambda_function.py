@@ -18,9 +18,7 @@ sfdc_raw['Amount'] = sfdc_raw['Amount'].replace('[\$,)]', '', regex=True).replac
 
 # group the dataframes to the appropriate level of granularity and sum the named value columns ('Net billed' and 'Amount')
 rpm_grouped = rpm_raw.groupby(['Agency', 'Added'], as_index=False).agg({'Net billed': 'sum'})
-print(rpm_grouped)
 sfdc_grouped = sfdc_raw.groupby(['Advisory Partner', 'Date'], as_index=False).agg({'Amount': 'sum'})
-print(sfdc_grouped)
 
 # rename the dataframes to match requested column names in README file
 column_rename = {
@@ -47,7 +45,7 @@ merged_df.to_csv(file_path, index=False)
 print('Analytical Questions\n')
 
 print('1. How many Suppliers were billed in August of 2022?')
-august_2022 = merged_df[merged_df['Month'] == '202208']
+august_2022 = sfdc_grouped[sfdc_grouped['Month'] == '202208']
 print(f'''Number of Suppliers billed in August of 2022 = {len(august_2022)}\nSuppliers: {august_2022['Supplier'].values.tolist()}\n''')
 
 print('2. Which Supplier in which month had the largest positive discrepancy between what was registered and what was billed?')
