@@ -12,7 +12,7 @@ sfdc_raw = pd.read_csv('sfdc_data.tsv', sep='\t')
 rpm_raw.Added = pd.to_datetime(rpm_raw.Added).dt.strftime('%Y%m')
 sfdc_raw.Date = pd.to_datetime(sfdc_raw.Date).dt.strftime('%Y%m')
 
-# clean up revenue data by converting from strings to float and handling negative values (written in parentheses)
+# clean up revenue data by converting from strings to float and handling negative reported values (written in parentheses)
 rpm_raw['Net billed'] = rpm_raw['Net billed'].replace('[\$,)]', '', regex=True).replace('[(]', '-', regex=True).astype(float)
 sfdc_raw['Amount'] = sfdc_raw['Amount'].replace('[\$,)]', '', regex=True).replace('[(]', '-', regex=True).astype(float)
 
@@ -20,7 +20,7 @@ sfdc_raw['Amount'] = sfdc_raw['Amount'].replace('[\$,)]', '', regex=True).replac
 rpm_grouped = rpm_raw.groupby(['Agency', 'Added'], as_index=False).agg({'Net billed': 'sum'})
 sfdc_grouped = sfdc_raw.groupby(['Advisory Partner', 'Date'], as_index=False).agg({'Amount': 'sum'})
 
-# rename the dataframes to match requested column names in README file
+# rename the grouped dataframes to match requested column names in Upstack coding challenge README file
 column_rename = {
     'Added': 'Month',
     'Advisory Partner': 'Supplier',
@@ -41,11 +41,12 @@ cwd = os.path.dirname(os.path.abspath(__file__))
 file_path = os.path.join(cwd, 'output', f'{datetime.datetime.now().strftime("%Y-%m-%d %H_%M_%S")}.csv')
 merged_df.to_csv(file_path, index=False)
 
-# answer Analytical Questions dynamically
+
+# Answer Analytical Questions dynamically and print to console when script is executed
 print('Analytical Questions\n')
 
 print('1. How many Suppliers were billed in August of 2022?')
-august_2022 = sfdc_grouped[sfdc_grouped['Month'] == '202208']
+august_2022 = rpm_grouped[rpm_grouped['Month'] == '202208']
 print(f'''Number of Suppliers billed in August of 2022 = {len(august_2022)}\nSuppliers: {august_2022['Supplier'].values.tolist()}\n''')
 
 print('2. Which Supplier in which month had the largest positive discrepancy between what was registered and what was billed?')
@@ -55,4 +56,33 @@ diff_df = diff_df.sort_values(by=['diff'], ascending=False).reset_index(drop=Tru
 if diff_df.at[0, 'diff'] != 0:
     print(f'''Supplier: {diff_df.at[0, 'Supplier']}\nMonth: {diff_df.at[0, 'Month']}''')
 else:
-    print('There are no *positive* discrepancies (Registered > Billed). All Suppliers for all Months either have (Billed = Registered) OR (Billed > Registered)')
+    print('There are no *positive* discrepancies (where Registered > Billed). All Suppliers for all Months either have (Billed = Registered) OR (Billed > Registered)')
+
+
+# Written Questions answered below as comments
+
+# 1. What questions do you have for the business owner of this data?
+
+'''
+
+'''
+
+# 2. What technical work should be done for your solution before it can be deployed?
+
+'''
+The solution needs to be "wrapped" in the common syntax used in AWS lambdas. The existing functionality
+should be wrapped in a function called lambda_handler that passes in an "event" and a "context" at runtime. 
+The two data files will likely be passed into the function as encoded objects in the body of the
+passed-in event and they will need to be accessed using the json library, decoded, and made available to the
+interior script. The current implementation (utilizing the pandas to_csv() method) assumes the files will be
+available at runtime in the same directory as the script itself for simplicity. Additionally, the production output
+files would likely be stored in AWS S3 rather than saved to a local ./output directory.
+
+Print statements near the end of this script that answer the provided Analytical Questions in a dynamic fashion would
+most likely be replaced with some sort of actual logging (to DataDog or equivalent). Additionally, the results (or at
+least a summary of the results) could be inserted into a database table so that a record of each run (once every 6 hours)
+is retained in perpetuity and we can look back to see when SFDC data did not match RPM data.
+
+There is a lot more that could be done in order to alert the end user of failures. Namely, error handling via try/except
+blocks and being sure the script will fail "loudly" in the event that data cannot be properly digested.
+'''
