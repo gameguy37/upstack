@@ -57,4 +57,4 @@ diff_df = diff_df.sort_values(by=['diff'], ascending=False).reset_index(drop=Tru
 if diff_df.at[0, 'diff'] != 0:
     print(f'''Supplier: {diff_df.at[0, 'Supplier']}\nMonth: {diff_df.at[0, 'Month']}''')
 else:
-    print('There are no discrepancies, all Suppliers for all Months have matching Billed and Registered values')
+    print('There are no *positive* discrepancies (Registered > Billed). All Suppliers for all Months either have (Billed = Registered) OR (Billed > Registered)')
