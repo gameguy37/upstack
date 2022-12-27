@@ -69,8 +69,9 @@ Do you foresee any future changes to the data that is currently being sent? Spec
     create issues with data digestion and cause errors.
 
 Could this data be aggregated first on the provider's end and then sent to Upstack?
-    Much of the data currently being sent to Upstack is not necessary for the end product of this script. item IDs, agencies, customer names, etc. are
-    simply being lost when the data is aggregated and rolled up into only three values (supplier, month, and $$$).
+    Much of the data currently being sent to Upstack is not necessary for the end product of this script.
+    Item IDs, agencies, customer names, account names, etc. are simply being lost when the data is aggregated
+    and rolled up into only three values (supplier, month, and $$$).
     Aggregating the data first would mean that smaller data files could be sent, reducing bandwith/overhead and would
     allow this script to be much more streamlined.
 
@@ -84,9 +85,9 @@ The solution needs to be "wrapped" in the common syntax used in AWS lambda funct
 should be wrapped in a function called lambda_handler that passes in an "event" and a "context" at runtime. 
 The two data files will likely be passed into the function as encoded objects in the body of the
 passed-in event and they will need to be accessed using the json library, decoded, and made available to the
-interior script. The current implementation (utilizing the pandas to_csv() method) assumes the TSV files will be
-available at runtime in the same directory as the script itself for simplicity. Additionally, the production output
-files would likely be stored in AWS S3 rather than saved to a local ./output directory.
+interior script. The current implementation on lines 8 and 9 (utilizing the pandas to_csv() method) assumes the TSV
+files will be available at runtime in the same directory as the script itself for simplicity. Additionally, the
+production output files would likely be stored in AWS S3 rather than saved to a local ./output directory.
 
 Print statements near the end of this script that answer the provided Analytical Questions in a dynamic fashion would
 most likely be replaced with some sort of actual logging (to DataDog or equivalent). Additionally, the results (or at
