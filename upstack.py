@@ -42,7 +42,7 @@ file_path = os.path.join(cwd, 'output', f'{datetime.datetime.now().strftime("%Y-
 merged_df.to_csv(file_path, index=False)
 
 
-# Answer Analytical Questions dynamically and print to console when script is executed
+# Answer Analytical Questions dynamically and print to console when script is executed.
 print('Analytical Questions\n')
 
 print('1. How many Suppliers were billed in August of 2022?')
@@ -64,17 +64,27 @@ else:
 # 1. What questions do you have for the business owner of this data?
 
 '''
+Do you foresee any future changes to the data that is currently being sent? Specifically in terms of granularity, column names, data types, and the like?
+    Having knowledge of future changes to the data would allow the script to be refactored in a way that is futureproof before those changes
+    create issues with data digestion and cause errors.
 
+Could this data be aggregated first on the provider's end and then sent to Upstack?
+    Much of the data currently being sent to Upstack is not necessary for the end product of this script. item IDs, agencies, customer names, etc. are
+    simply being lost when the data is aggregated and rolled up into only three values (supplier, month, and $$$).
+    Aggregating the data first would mean that smaller data files could be sent, reducing bandwith/overhead and would
+    allow this script to be much more streamlined.
+
+P.S. I appreciate the lightheartedness of the names used in the dummy data for this coding challenge (references to Spiderman, The Office, Law & Order, KFC, etc.)
 '''
 
 # 2. What technical work should be done for your solution before it can be deployed?
 
 '''
-The solution needs to be "wrapped" in the common syntax used in AWS lambdas. The existing functionality
+The solution needs to be "wrapped" in the common syntax used in AWS lambda functions. The existing functionality
 should be wrapped in a function called lambda_handler that passes in an "event" and a "context" at runtime. 
 The two data files will likely be passed into the function as encoded objects in the body of the
 passed-in event and they will need to be accessed using the json library, decoded, and made available to the
-interior script. The current implementation (utilizing the pandas to_csv() method) assumes the files will be
+interior script. The current implementation (utilizing the pandas to_csv() method) assumes the TSV files will be
 available at runtime in the same directory as the script itself for simplicity. Additionally, the production output
 files would likely be stored in AWS S3 rather than saved to a local ./output directory.
 
@@ -84,5 +94,7 @@ least a summary of the results) could be inserted into a database table so that 
 is retained in perpetuity and we can look back to see when SFDC data did not match RPM data.
 
 There is a lot more that could be done in order to alert the end user of failures. Namely, error handling via try/except
-blocks and being sure the script will fail "loudly" in the event that data cannot be properly digested.
+blocks and being sure the script will alert and fail "loudly" in the event that data cannot be properly digested. For instance,
+if data begins coming through in a slightly different format that cannot be properly handled using the existing regular
+expressions or if the data provider decides to change the data they are sending (names of columns, data types, etc.).
 '''
